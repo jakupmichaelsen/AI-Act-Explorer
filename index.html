@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Act Explorer</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">AI Act Explorer</p>
+        <h1>Forklar EU AI-forordningen direkte i browseren</h1>
+        <p class="lead">
+          Upload en Markdown- eller tekstfil, vælg et afsnit, og få en forklaring plus opfølgende spørgsmål.
+        </p>
+      </div>
+      <div class="hero-card">
+        <strong>Server-baseret</strong>
+        <span>OpenAI-kald går via din lokale backend, ikke fra browseren.</span>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <div class="toolbar-copy">
+        <span id="status" class="status">Klar til upload.</span>
+        <span id="fileName" class="file-name">Ingen fil valgt.</span>
+      </div>
+      <label class="dropzone" id="dropzone" for="fileInput">
+        Klik eller træk en .md- eller .txt-fil her
+      </label>
+      <input id="fileInput" type="file" accept=".md,.txt" hidden />
+    </section>
+
+    <section class="layout">
+      <aside class="panel outline-panel">
+        <div class="panel-header">
+          <h2>Indholdsfortegnelse</h2>
+        </div>
+        <div id="outline" class="outline-list">
+          <p class="empty-state">Upload en fil for at se afsnit.</p>
+        </div>
+      </aside>
+
+      <section class="panel document-panel">
+        <div class="panel-header">
+          <h2>Afsnit</h2>
+        </div>
+        <div id="visning" class="document-list">
+          <p class="empty-state">Dokumentet vises her, når du har valgt en fil.</p>
+        </div>
+      </section>
+
+      <aside class="panel assistant-panel">
+        <div class="panel-header">
+          <h2>Forklaring</h2>
+        </div>
+        <div id="output" class="chat-output">
+          <div class="empty-state">
+            Vælg et afsnit for at få en forklaring og stille opfølgende spørgsmål.
+          </div>
+        </div>
+        <form id="chatForm" class="chatbox">
+          <input id="followup" type="text" placeholder="Opfølgende spørgsmål..." autocomplete="off" />
+          <button id="send" type="submit">Send</button>
+        </form>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
