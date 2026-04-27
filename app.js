@@ -1,3 +1,4 @@
+if (typeof document !== "undefined") {
 const els = {
   status: document.getElementById("status"),
   fileName: document.getElementById("fileName"),
@@ -336,3 +337,4 @@ document.addEventListener("keydown", (event) => {
 });
 
 loadOfficialAiAct();
+}
