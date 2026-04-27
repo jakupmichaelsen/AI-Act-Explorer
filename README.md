@@ -8,7 +8,10 @@ The app now runs as a small web app with:
 
 - a browser frontend in `index.html`, `app.js`, and `styles.css`
 - a local Node server in `server.js`
+- Vercel-ready serverless routes in `api/`
 - OpenAI requests routed through the backend instead of the browser
+- an optional AI Act loader that tries the official EUR-Lex publication page
+- a browser-stored OpenAI API key field for users who want to use their own key
 
 ## Features
 
@@ -39,8 +42,22 @@ On Windows, you can also double-click `launch.cmd` or run:
 
 That launcher picks a free port, waits for `/healthz`, and opens the browser automatically.
 
+## Deploy on Vercel
+
+1. Import the GitHub repo into Vercel.
+2. Deploy without a custom build step.
+
+Vercel will serve `index.html` from the repo root and run the API routes in `api/`.
+If you do not set `OPENAI_API_KEY` in Vercel, each user can enter their own key in the browser.
+
+## AI Act Loader
+
+- The app includes a `Load AI Act` button.
+- On startup it also tries to load the official AI Act automatically.
+- If the official source is unavailable from the runtime environment, the app shows a message with the official EUR-Lex link and you can still upload a file manually.
+
 ## Notes
 
-- The browser no longer needs an API key field.
+- The browser key field is stored in `localStorage` in that browser only.
 - The app still uses `marked` from a CDN for Markdown rendering.
 - `GET /healthz` returns a simple JSON health check.

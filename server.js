@@ -6,8 +6,6 @@ const rootDir = __dirname;
 const publicDir = rootDir;
 const preferredPort = Number(process.env.PORT || 3000);
 const host = process.env.HOST || "0.0.0.0";
-const openAiApiKey = process.env.OPENAI_API_KEY;
-const openAiModel = process.env.OPENAI_MODEL || "gpt-4o";
 
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
@@ -22,56 +20,6 @@ const contentTypes = {
 function sendJson(res, statusCode, payload) {
   res.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(payload));
-}
-
-async function readRequestBody(req) {
-  const chunks = [];
-  let size = 0;
-
-  for await (const chunk of req) {
-    size += chunk.length;
-    if (size > 1_000_000) {
-      throw new Error("Request body too large.");
-    }
-    chunks.push(chunk);
-  }
-
-  return Buffer.concat(chunks).toString("utf8");
-}
-
-function isSafeMessage(message) {
-  return (
-    message &&
-    typeof message === "object" &&
-    ["system", "user", "assistant", "developer"].includes(message.role) &&
-    typeof message.content === "string"
-  );
-}
-
-async function proxyToOpenAI(messages) {
-  if (!openAiApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured on the server.");
-  }
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${openAiApiKey}`,
-    },
-    body: JSON.stringify({
-      model: openAiModel,
-      messages,
-      temperature: 0.4,
-    }),
-  });
-
-  const payload = await response.json().catch(() => null);
-  if (!response.ok) {
-    throw new Error(payload?.error?.message || payload?.error || `OpenAI request failed with HTTP ${response.status}`);
-  }
-
-  return payload.choices?.[0]?.message?.content || "⚠️ Ingen forklaring.";
 }
 
 async function serveStatic(req, res, requestPath) {
@@ -105,25 +53,12 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === "POST" && url.pathname === "/api/explain") {
-      const rawBody = await readRequestBody(req);
-      let body = {};
-      if (rawBody) {
-        try {
-          body = JSON.parse(rawBody);
-        } catch {
-          sendJson(res, 400, { error: "Invalid JSON body." });
-          return;
-        }
-      }
-      const messages = Array.isArray(body.messages) ? body.messages.filter(isSafeMessage) : [];
+      await require("./api/explain")(req, res);
+      return;
+    }
 
-      if (messages.length === 0) {
-        sendJson(res, 400, { error: "Missing messages array." });
-        return;
-      }
-
-      const reply = await proxyToOpenAI(messages.slice(0, 20));
-      sendJson(res, 200, { reply });
+    if (req.method === "GET" && url.pathname === "/api/load-ai-act") {
+      await require("./api/load-ai-act")(req, res);
       return;
     }
 

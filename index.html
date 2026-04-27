@@ -28,10 +28,18 @@
         <span id="status" class="status">Klar til upload.</span>
         <span id="fileName" class="file-name">Ingen fil valgt.</span>
       </div>
-      <label class="dropzone" id="dropzone" for="fileInput">
-        Klik eller træk en .md- eller .txt-fil her
-      </label>
-      <input id="fileInput" type="file" accept=".md,.txt" hidden />
+      <div class="toolbar-actions">
+        <label class="key-field">
+          <span>OpenAI API-nøgle</span>
+          <input id="apiKey" type="password" placeholder="Skal kun bruges lokalt i din browser" autocomplete="off" />
+        </label>
+        <button id="clearKey" class="secondary-button" type="button">Ryd nøgle</button>
+        <button id="loadAiAct" class="secondary-button" type="button">Load AI Act</button>
+        <label class="dropzone" id="dropzone" for="fileInput">
+          Klik eller træk en .md- eller .txt-fil her
+        </label>
+        <input id="fileInput" type="file" accept=".md,.txt" hidden />
+      </div>
     </section>
 
     <section class="layout">

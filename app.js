@@ -1,8 +1,11 @@
 const els = {
   status: document.getElementById("status"),
   fileName: document.getElementById("fileName"),
+  apiKey: document.getElementById("apiKey"),
+  clearKey: document.getElementById("clearKey"),
   dropzone: document.getElementById("dropzone"),
   fileInput: document.getElementById("fileInput"),
+  loadAiAct: document.getElementById("loadAiAct"),
   outline: document.getElementById("outline"),
   visning: document.getElementById("visning"),
   output: document.getElementById("output"),
@@ -20,6 +23,8 @@ const state = {
 
 const systemPrompt = "Forklar dele af AI-forordningen kort, klart og pædagogisk. Brug punktopstillinger og markdown.";
 const followupPrompt = "Du er en hjælpsom juridisk assistent, der forklarer EU AI-forordningen klart og pædagogisk. Brug punktopstillinger og markdown.";
+const officialAiActUrl = "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng";
+const apiKeyStorageKey = "aiActExplorerOpenAiKey";
 
 function escapeHtml(value) {
   return String(value)
@@ -37,6 +42,33 @@ function setStatus(message, kind = "info") {
 
 function setFileName(name) {
   els.fileName.textContent = name || "Ingen fil valgt.";
+}
+
+function getStoredApiKey() {
+  try {
+    return window.localStorage.getItem(apiKeyStorageKey) || "";
+  } catch {
+    return "";
+  }
+}
+
+function setStoredApiKey(value) {
+  try {
+    if (value) {
+      window.localStorage.setItem(apiKeyStorageKey, value);
+    } else {
+      window.localStorage.removeItem(apiKeyStorageKey);
+    }
+  } catch {
+    // Ignore storage failures in restricted browser contexts.
+  }
+}
+
+function resetDocumentState() {
+  state.sectionCache.clear();
+  state.outlineLinks = [];
+  state.activeIndex = -1;
+  state.currentSectionKey = "";
 }
 
 function setActiveLink(index) {
@@ -97,7 +129,7 @@ async function callAssistant(messages) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, apiKey: els.apiKey.value.trim() }),
   });
 
   const payload = await response.json().catch(() => null);
@@ -106,6 +138,35 @@ async function callAssistant(messages) {
   }
 
   return payload.reply || "⚠️ Ingen svar.";
+}
+
+async function loadOfficialAiAct() {
+  setStatus("Henter den officielle AI Act...", "pending");
+  els.loadAiAct.disabled = true;
+  els.output.innerHTML = '<div class="empty-state">⏳ Henter den officielle AI Act...</div>';
+
+  try {
+    const response = await fetch("/api/load-ai-act");
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      throw new Error(payload?.error || `HTTP ${response.status}`);
+    }
+
+    renderSections(payload.content);
+    setFileName(`${payload.label} - official source`);
+    setStatus("Den officielle AI Act er indlæst.");
+  } catch (error) {
+    setStatus(`Kunne ikke hente AI Act: ${error.message || "Ukendt fejl"}`, "error");
+    els.output.innerHTML = `
+      <div class="empty-state">
+        Kunne ikke hente den officielle AI Act automatisk.
+        <a href="${officialAiActUrl}" target="_blank" rel="noreferrer">Åbn den officielle kilde</a>
+        eller upload en fil manuelt.
+      </div>
+    `;
+  } finally {
+    els.loadAiAct.disabled = false;
+  }
 }
 
 async function forklar(section, index = null) {
@@ -189,10 +250,7 @@ function renderSections(content) {
 
   els.outline.innerHTML = "";
   els.visning.innerHTML = "";
-  state.sectionCache.clear();
-  state.outlineLinks = [];
-  state.activeIndex = -1;
-  state.currentSectionKey = "";
+  resetDocumentState();
 
   sections.forEach((section, index) => {
     const title = getSectionTitle(section);
@@ -238,7 +296,19 @@ function handleFile(file) {
   reader.readAsText(file);
 }
 
+els.apiKey.value = getStoredApiKey();
+els.apiKey.addEventListener("input", () => {
+  setStoredApiKey(els.apiKey.value.trim());
+});
+
+els.clearKey.addEventListener("click", () => {
+  els.apiKey.value = "";
+  setStoredApiKey("");
+  els.apiKey.focus();
+});
+
 els.chatForm.addEventListener("submit", sendFollowup);
+els.loadAiAct.addEventListener("click", loadOfficialAiAct);
 els.fileInput.addEventListener("change", (event) => {
   handleFile(event.target.files?.[0]);
 });
@@ -264,3 +334,5 @@ document.addEventListener("keydown", (event) => {
     els.chatForm.requestSubmit();
   }
 });
+
+loadOfficialAiAct();

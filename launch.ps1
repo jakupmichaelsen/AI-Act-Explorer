@@ -28,9 +28,13 @@ function Get-FreePort {
 
 $port = Get-FreePort
 $logPath = Join-Path $PSScriptRoot "server.log"
+$outPath = Join-Path $PSScriptRoot "server.out.log"
+$errPath = Join-Path $PSScriptRoot "server.err.log"
 
-if (Test-Path $logPath) {
-  Remove-Item $logPath -Force
+foreach ($path in @($logPath, $outPath, $errPath)) {
+  if (Test-Path $path) {
+    Remove-Item $path -Force
+  }
 }
 
 $env:PORT = "$port"
@@ -40,8 +44,8 @@ $serverProcess = Start-Process `
   -ArgumentList "server.js" `
   -WorkingDirectory $PSScriptRoot `
   -WindowStyle Hidden `
-  -RedirectStandardOutput $logPath `
-  -RedirectStandardError $logPath `
+  -RedirectStandardOutput $outPath `
+  -RedirectStandardError $errPath `
   -PassThru
 
 $url = "http://127.0.0.1:$port"
@@ -65,4 +69,4 @@ if (-not $serverProcess.HasExited) {
   Stop-Process -Id $serverProcess.Id -Force
 }
 
-Write-Error "Server did not become reachable. Check $logPath for details."
+Write-Error "Server did not become reachable. Check $outPath and $errPath for details."
