@@ -2,6 +2,8 @@
 
 Interactive tool for exploring the EU AI Act using AI explanations.
 
+Live demo: https://ai-act-explorer.vercel.app/
+
 ## What changed
 
 The app now runs as a small web app with:
