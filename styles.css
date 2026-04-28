@@ -56,22 +56,12 @@ a {
 
 .hero-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
   gap: 16px;
   align-items: end;
 }
 
 .hero-copy {
   max-width: 72ch;
-}
-
-.hero-status {
-  display: grid;
-  justify-items: end;
-  gap: 6px;
-  align-self: center;
-  padding: 8px 0;
-  text-align: right;
 }
 
 .eyebrow {
@@ -132,6 +122,16 @@ a {
 
 .file-name {
   font-size: 0.94rem;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 12px 4px 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
 }
 
 .settings-panel {
@@ -432,7 +432,6 @@ a {
 
   .hero,
   .hero-main {
-    grid-template-columns: 1fr;
     display: grid;
     align-items: start;
   }
@@ -442,9 +441,9 @@ a {
     right: 0;
   }
 
-  .hero-status {
-    justify-items: start;
-    text-align: left;
+  .status-bar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .chatbox {

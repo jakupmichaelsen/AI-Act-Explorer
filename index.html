@@ -17,10 +17,6 @@
             Forklar EU AI-forordningen direkte i browseren: Upload en Markdown- eller tekstfil, vælg et afsnit, og få en forklaring plus opfølgende spørgsmål.
           </p>
         </div>
-        <div class="hero-status">
-          <span id="status" class="status">Klar til upload.</span>
-          <span id="fileName" class="file-name">Ingen fil valgt.</span>
-        </div>
       </div>
       <button id="settingsToggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="settingsPanel" aria-label="Åbn indstillinger">
         ⚙
@@ -76,6 +72,11 @@
         </form>
       </aside>
     </section>
+
+    <footer class="status-bar">
+      <span id="status" class="status">Klar til upload.</span>
+      <span id="fileName" class="file-name">Ingen fil valgt.</span>
+    </footer>
   </main>
 
   <script src="./app.js"></script>
