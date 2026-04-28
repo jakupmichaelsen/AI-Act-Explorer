@@ -108,14 +108,14 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 54px;
-  padding: 0 18px;
-  border: 1px dashed rgba(148, 163, 184, 0.22);
-  border-radius: 16px;
-  background: rgba(22, 27, 34, 0.85);
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.16);
+  border-radius: 12px;
+  background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: transform 0.16s ease, border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease;
+  transition: color 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
 }
 
 .toolbar-actions {
@@ -145,21 +145,23 @@ a {
 }
 
 .secondary-button {
-  min-height: 44px;
-  padding: 0 16px;
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.025);
+  min-height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--muted);
   cursor: pointer;
-  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+  justify-self: start;
+  text-decoration: underline;
+  text-decoration-color: rgba(148, 163, 184, 0.25);
+  text-underline-offset: 0.2em;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
 }
 
 .secondary-button:hover {
-  border-color: rgba(148, 163, 184, 0.28);
-  background: rgba(255, 255, 255, 0.04);
   color: var(--text);
-  transform: translateY(-1px);
+  text-decoration-color: rgba(229, 231, 235, 0.65);
 }
 
 .secondary-button:disabled {
@@ -169,9 +171,8 @@ a {
 
 .dropzone:hover,
 .dropzone.dragover {
-  transform: translateY(-1px);
-  border-color: rgba(148, 163, 184, 0.42);
-  background: rgba(22, 27, 34, 0.95);
+  border-color: rgba(148, 163, 184, 0.34);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--text);
 }
 
@@ -333,16 +334,19 @@ a {
   padding: 0 16px;
   border: 0;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text);
-  font-weight: 600;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgba(148, 163, 184, 0.25);
+  text-underline-offset: 0.2em;
   cursor: pointer;
-  transition: background-color 0.16s ease, transform 0.16s ease, color 0.16s ease;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
 }
 
 .chatbox button:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-1px);
+  color: var(--text);
+  text-decoration-color: rgba(229, 231, 235, 0.65);
 }
 
 .chatbox button:disabled {
@@ -392,10 +396,6 @@ a {
     grid-template-columns: 1fr;
     display: grid;
     align-items: start;
-  }
-
-  .hero-card {
-    max-width: none;
   }
 
   .chatbox {
