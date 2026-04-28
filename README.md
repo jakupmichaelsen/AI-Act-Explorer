@@ -55,8 +55,8 @@ If you do not set `OPENAI_API_KEY` in Vercel, each user can enter their own key 
 ## AI Act Loader
 
 - The app includes a `Load AI Act` button.
-- On startup it also tries to load the official AI Act automatically.
-- It prefers the checked-in `ai-act-official.md` snapshot first, then falls back to the live EUR-Lex source.
+- On startup it loads the checked-in `ai-act-official.md` snapshot by default.
+- If that file is unavailable, it falls back to the live EUR-Lex source.
 - If the official source is unavailable from the runtime environment, the app shows a message with the official EUR-Lex link and you can still upload a file manually.
 
 ## Notes

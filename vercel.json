@@ -5,6 +5,7 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "app.js", "use": "@vercel/static" },
+    { "src": "ai-act-official.md", "use": "@vercel/static" },
     { "src": "api/*.js", "use": "@vercel/node" }
   ]
 }

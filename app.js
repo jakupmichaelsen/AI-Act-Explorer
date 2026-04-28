@@ -27,6 +27,7 @@ const state = {
 const systemPrompt = "Forklar dele af AI-forordningen kort, klart og pædagogisk. Brug punktopstillinger og markdown.";
 const followupPrompt = "Du er en hjælpsom juridisk assistent, der forklarer EU AI-forordningen klart og pædagogisk. Brug punktopstillinger og markdown.";
 const officialAiActUrl = "https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng";
+const localAiActMarkdownUrl = "/ai-act-official.md";
 const apiKeyStorageKey = "aiActExplorerOpenAiKey";
 
 function escapeHtml(value) {
@@ -150,11 +151,22 @@ async function callAssistant(messages) {
 }
 
 async function loadOfficialAiAct() {
-  setStatus("Henter den officielle AI Act...", "pending");
+  setStatus("Henter AI Act...", "pending");
   els.loadAiAct.disabled = true;
-  els.output.innerHTML = '<div class="empty-state">⏳ Henter den officielle AI Act...</div>';
+  els.output.innerHTML = '<div class="empty-state">⏳ Henter AI Act...</div>';
 
   try {
+    const localResponse = await fetch(localAiActMarkdownUrl, { cache: "no-store" });
+    if (localResponse.ok) {
+      const markdown = await localResponse.text();
+      if (markdown.trim()) {
+        renderSections(markdown);
+        setFileName("Regulation (EU) 2024/1689 (AI Act) - local snapshot");
+        setStatus("AI Act er indlæst fra lokal snapshot.");
+        return;
+      }
+    }
+
     const response = await fetch("/api/load-ai-act");
     const payload = await response.json().catch(() => null);
     if (!response.ok) {
@@ -163,12 +175,12 @@ async function loadOfficialAiAct() {
 
     renderSections(payload.content);
     setFileName(`${payload.label} - official source`);
-    setStatus("Den officielle AI Act er indlæst.");
+    setStatus("AI Act er indlæst.");
   } catch (error) {
     setStatus(`Kunne ikke hente AI Act: ${error.message || "Ukendt fejl"}`, "error");
     els.output.innerHTML = `
       <div class="empty-state">
-        Kunne ikke hente den officielle AI Act automatisk.
+        Kunne ikke hente AI Act automatisk.
         <a href="${officialAiActUrl}" target="_blank" rel="noreferrer">Åbn den officielle kilde</a>
         eller upload en fil manuelt.
       </div>
