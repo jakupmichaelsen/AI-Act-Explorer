@@ -48,11 +48,30 @@ a {
 }
 
 .hero {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: end;
+  position: relative;
+  display: grid;
+  gap: 18px;
   margin-bottom: 20px;
+}
+
+.hero-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.hero-copy {
+  max-width: 72ch;
+}
+
+.hero-status {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  align-self: center;
+  padding: 8px 0;
+  text-align: right;
 }
 
 .eyebrow {
@@ -77,23 +96,34 @@ a {
   line-height: 1.5;
 }
 
+.settings-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.settings-toggle:hover,
+.settings-toggle.active {
+  border-color: rgba(148, 163, 184, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
 .status,
 .file-name,
 .empty-state {
   color: var(--muted);
-}
-
-.toolbar {
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.toolbar-copy {
-  display: grid;
-  gap: 6px;
 }
 
 .status {
@@ -102,6 +132,15 @@ a {
 
 .file-name {
   font-size: 0.94rem;
+}
+
+.settings-panel {
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background: rgba(17, 24, 39, 0.92);
+  box-shadow: var(--shadow);
 }
 
 .dropzone {
@@ -120,7 +159,7 @@ a {
 
 .toolbar-actions {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   justify-items: stretch;
 }
 
@@ -392,10 +431,20 @@ a {
   }
 
   .hero,
-  .toolbar {
+  .hero-main {
     grid-template-columns: 1fr;
     display: grid;
     align-items: start;
+  }
+
+  .settings-toggle {
+    top: 4px;
+    right: 0;
+  }
+
+  .hero-status {
+    justify-items: start;
+    text-align: left;
   }
 
   .chatbox {

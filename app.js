@@ -2,6 +2,8 @@ if (typeof document !== "undefined") {
 const els = {
   status: document.getElementById("status"),
   fileName: document.getElementById("fileName"),
+  settingsToggle: document.getElementById("settingsToggle"),
+  settingsPanel: document.getElementById("settingsPanel"),
   apiKey: document.getElementById("apiKey"),
   clearKey: document.getElementById("clearKey"),
   dropzone: document.getElementById("dropzone"),
@@ -43,6 +45,12 @@ function setStatus(message, kind = "info") {
 
 function setFileName(name) {
   els.fileName.textContent = name || "Ingen fil valgt.";
+}
+
+function setSettingsOpen(isOpen) {
+  els.settingsPanel.hidden = !isOpen;
+  els.settingsToggle.setAttribute("aria-expanded", String(isOpen));
+  els.settingsToggle.classList.toggle("active", isOpen);
 }
 
 function getStoredApiKey() {
@@ -302,6 +310,12 @@ els.apiKey.addEventListener("input", () => {
   setStoredApiKey(els.apiKey.value.trim());
 });
 
+setSettingsOpen(false);
+
+els.settingsToggle.addEventListener("click", () => {
+  setSettingsOpen(els.settingsPanel.hidden);
+});
+
 els.clearKey.addEventListener("click", () => {
   els.apiKey.value = "";
   setStoredApiKey("");
@@ -330,6 +344,12 @@ els.dropzone.addEventListener("drop", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !els.settingsPanel.hidden) {
+    setSettingsOpen(false);
+    els.settingsToggle.focus();
+    return;
+  }
+
   if (event.key === "Enter" && document.activeElement === els.followup) {
     event.preventDefault();
     els.chatForm.requestSubmit();
